@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import '../app/globals.css';
+import { useState, useEffect } from "react";
+import "../app/globals.css";
 
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
@@ -8,17 +8,19 @@ export default function UsersTable() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/auth/user/users');
+      const response = await fetch("http://api.growwpaisa.com/auth/user/users");
       if (!response.ok) {
-        throw new Error('Failed to fetch users');
+        throw new Error("Failed to fetch users");
       }
       const data = await response.json();
-      console.log('Fetched users:', data); // Check structure
-      setUsers(Array.isArray(data.users) ? data.users : []); // Extract users array
+      console.log("Fetched users:", data); // Check structure
+      const sortedUsers = Array.isArray(data.users) ? data.users.sort((a, b) => a.user_id - b.user_id) : [];
+      setUsers(sortedUsers); // Set sorted users
       setLoading(false);
     } catch (error) {
       setError(error.message);
       setLoading(false);
+      
     }
   };
 
@@ -27,7 +29,7 @@ export default function UsersTable() {
   }, []);
 
   useEffect(() => {
-    console.log('Users state after fetch:', users); // Verify state update
+    console.log("Users state after fetch:", users); // Verify state update
   }, [users]);
 
   if (loading) {
@@ -35,7 +37,9 @@ export default function UsersTable() {
   }
 
   if (error) {
-    return <div className="bg-white p-8 rounded-lg shadow-md">Error: {error}</div>;
+    return (
+      <div className="bg-white p-8 rounded-lg shadow-md">Error: {error}</div>
+    );
   }
 
   return (
@@ -44,10 +48,19 @@ export default function UsersTable() {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coins in Wallet</th> {/* New column */}
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              User ID
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Name
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Email
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Coins in Wallet
+            </th>{" "}
+            {/* New column */}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -57,12 +70,18 @@ export default function UsersTable() {
                 <td className="px-6 py-4 whitespace-nowrap">{user.user_id}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.Wallet?.coins || 0}</td> {/* Display coins */}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {user.Wallet?.coins || 0}
+                </td>{" "}
+                {/* Display coins */}
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="px-6 py-4 text-center">No users found</td> {/* Adjust colspan */}
+              <td colSpan="4" className="px-6 py-4 text-center">
+                No users found
+              </td>{" "}
+              {/* Adjust colspan */}
             </tr>
           )}
         </tbody>

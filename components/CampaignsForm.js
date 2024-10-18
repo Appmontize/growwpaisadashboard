@@ -15,7 +15,7 @@ export default function CampaignsForm() {
   // Fetch campaigns from the backend
   const fetchCampaigns = async () => {
     try {
-      const response = await fetch('http://localhost:3001/campaign/fetch');
+      const response = await fetch('https://api.growwpaisa.com/campaign/fetch');
       const data = await response.json();
       if (Array.isArray(data)) {
         setCampaigns(data);
@@ -41,8 +41,8 @@ export default function CampaignsForm() {
     try {
       const method = editingCampaignId ? 'PUT' : 'POST';
       const endpoint = editingCampaignId
-        ? `http://localhost:3001/campaign/campaign/${editingCampaignId}`
-        : 'http://localhost:3001/campaign/create/';
+        ? `https://api.growwpaisa.com/campaign/campaign/${editingCampaignId}`
+        : 'https://api.growwpaisa.com/campaign/create/';
         
       const response = await fetch(endpoint, {
         method: method,
@@ -83,7 +83,7 @@ export default function CampaignsForm() {
   // Handle deletion of a campaign
   const handleDeleteCampaign = async (id) => {
     try {
-      await fetch(`http://localhost:3001/campaign/campaigns/${id}`, {
+      await fetch(`https://api.growwpaisa.com/campaign/campaigns/${id}`, {
         method: 'DELETE',
       });
       fetchCampaigns();
